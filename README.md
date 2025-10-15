@@ -4,14 +4,11 @@
 Título do Projeto: Sistema de Futebol da Copa do Mundo
 
 Disciplina: Banco de dados
-
-Professor(a): Cássio Leonardo Rodrigues
-
 Autores:
 
-João Gabriel Abreu Soares - 202302553
+João Gabriel Abreu Soares
 
-Ícaro Pereira Rosa Alves de Sá - 202302547
+Ícaro Pereira Rosa Alves de Sá
 
 
 ### <a name="_92n5yeitwnh2"></a>**Controle de Versão**

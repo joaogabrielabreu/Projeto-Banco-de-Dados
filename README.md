@@ -13,7 +13,7 @@ João Gabriel Abreu Soares
 
 ### <a name="_92n5yeitwnh2"></a>**Controle de Versão**
 
-|Versão|Data|Autor(es)|` `Descrição da Alteração|
+|Versão|Data|Autor(es)|Descrição da Alteração|
 | :- | :- | :- | :- |
 |1\.0|26/08|Ícaro Pereira|Versão inicial do documento|
 |1\.1|06/10|João Gabriel|Adicionando diagrama MER e dicionário de dados em formato de lista.|

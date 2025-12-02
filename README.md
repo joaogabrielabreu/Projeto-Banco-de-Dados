@@ -4,19 +4,25 @@
 Título do Projeto: Sistema de Futebol da Copa do Mundo
 
 Disciplina: Banco de dados
+
+Professor(a): Cássio Leonardo Rodrigues
+
 Autores:
 
-João Gabriel Abreu Soares
+João Gabriel Abreu Soares - 202302553
 
-Ícaro Pereira Rosa Alves de Sá
+Ícaro Pereira Rosa Alves de Sá - 202302547
 
 
 ### <a name="_92n5yeitwnh2"></a>**Controle de Versão**
 
-|Versão|Data|Autor(es)|Descrição da Alteração|
+|Versão|Data|Autor(es)|` `Descrição da Alteração.|
 | :- | :- | :- | :- |
-|1\.0|26/08|Ícaro Pereira|Versão inicial do documento|
+|1\.0|` `26/08|Ícaro Pereira|Versão inicial do documento.|
 |1\.1|06/10|João Gabriel|Adicionando diagrama MER e dicionário de dados em formato de lista.|
+|1\.2|10/11|Ícaro Pereira|Adicionando comandos SQL de criação das tabelas.|
+|1\.3|30/11|Ícaro Pereira|Inserindo Mapeamento para o Modelo Relacional.|
+|1\.4|02/12|João Gabriel|Inserindo diagrama MER atualizado e a conclusão com referências.|
 
 
 
@@ -43,14 +49,14 @@ João Gabriel Abreu Soares
    5.1. Scripts SQL de Criação (DDL)\
    5.2. Scripts SQL de Manipulação e Consulta (DML/DQL)
 1. Conclusão\
-   6.1. Considerações Finais\
-   6.2. Referências
+   6.1. Considerações Finais
+1. Referências
 
 
 ### **1. Introdução**
 ####
 #### **1.1. Contexto e Objetivo do Projeto**
-O presente projeto tem como objetivo descrever e especificar os requisitos de dados para o "Sistema de Futebol da Copa do Mundo". O propósito fundamental é registrar e organizar de forma estruturada as informações históricas das edições da Copa do Mundo da FIFA. O sistema se concentrará em dados relativos a jogadores, seleções, jogos e seus respectivos resultados, permitindo análises detalhadas sobre a história da competição.
+O presente projeto tem como objetivo descrever e especificar os requisitos de dados para o "Sistema de Futebol da Copa do Mundo". O propósito fundamental é registrar e organizar de forma estruturada as informações históricas das edições da Copa do Mundo da FIFA. O sistema se concentrará em dados relativos a jogadores, seleções, jogos e seus respectivos resultados, permitindo análises detalhadas sobre a história da competição. Feito No PostgreeSQL Server.
 #### **1.2. Escopo**
 
 O escopo do sistema abrange o registro histórico de jogos de edições anteriores da Copa do Mundo. Isso inclui:
@@ -113,19 +119,21 @@ As funcionalidades do sistema que interagem com o banco de dados são as seguint
 ### **3. Projeto Conceitual**
 
 #### **3.1. Modelo Entidade-Relacionamento (MER)**
-![](Aspose.Words.b7ae9b76-0ffb-43ef-bb72-3d9012133713.001.png)
+![](Aspose.Words.e3214c66-426f-411f-b025-82c4cd47df57.001.png)
 #### **3.2. Dicionário de Dados**
 ### **Entidade: Edição**
 - **Ano:**
   - *Descrição:* Ano de realização da edição do torneio.
   - *Tipo de Dado:* Inteiro / Ano
-- **Campeão:**
+- **Campeao:**
   - *Descrição:* Nome da seleção que venceu a edição.
-  - *Tipo de Dado:* Texto
-- **País Sede:**
+
+*Tipo de Dado:* Texto
+
+- **Pais Sede:**
   - *Descrição:* Nome do país que sediou o torneio.
   - *Tipo de Dado:* Texto
-- **Seleções Participantes:**
+- **Seleções\_Participantes:**
   - *Descrição:* Número total de seleções que participaram da edição.
   - *Tipo de Dado:* Inteiro
 ### **Entidade: Jogos**
@@ -153,6 +161,9 @@ As funcionalidades do sistema que interagem com o banco de dados são as seguint
 - **gols\_selecao2:**
   - *Descrição:* Número de gols marcados pela segunda seleção.
   - *Tipo de Dado:* Inteiro
+- **Ano\_edicao** **(Chave Estrangeira):**
+  - *Descrição:* Ano da edição da Copa em que o jogo ocorreu.
+  - *Tipo de Dado:* Inteiro
 ### **Entidade: Seleção**
 - **id\_selecao (Chave Primária):**
   - *Descrição:* Identificador único para cada seleção. (Inferido pela necessidade de uma chave)
@@ -163,32 +174,27 @@ As funcionalidades do sistema que interagem com o banco de dados são as seguint
 - **Confederação:**
   - *Descrição:* Confederação à qual a seleção pertence (ex: CONMEBOL, UEFA).
   - *Tipo de Dado:* Texto
+
 ### **Entidade: Jogador**
 - **id\_jogador (Chave Primária):**
   - *Descrição:* Identificador único para cada jogador. (Inferido pela necessidade de uma chave)
   - *Tipo de Dado:* Inteiro / Autoincremento
-- **Nome:**
+- **nome:**
   - *Descrição:* Nome completo do jogador.
   - *Tipo de Dado:* Texto
-- **Data Nascimento:**
+- **data\_nascimento:**
   - *Descrição:* Data de nascimento do jogador.
   - *Tipo de Dado:* Data
-- **Posição:**
+- **posicao:**
   - *Descrição:* Posição principal em que o jogador atua (ex: Atacante, Goleiro).
   - *Tipo de Dado:* Texto
-- **Clube:**
-  - *Descrição:* Clube onde o jogador atuava durante o torneio.
-  - *Tipo de Dado:* Texto
-- **Nacionalidade:**
+- **nacionalidade:**
   - *Descrição:* Nacionalidade do jogador.
   - *Tipo de Dado:* Texto
-- **Número:**
-  - *Descrição:* Número da camisa do jogador na seleção.
-  - *Tipo de Dado:* Inteiro
 - **id\_selecao (Chave Estrangeira):**
   - *Descrição:* Identificador da seleção à qual o jogador pertence.
   - *Tipo de Dado:* Inteiro
-### **Entidade Associativa: Participação na partida**
+### **Entidade Associativa: Participação**
 Esta entidade é formada pela relação N:N entre Jogador e Jogos.
 
 - **id\_jogo (Chave Estrangeira):**
@@ -197,98 +203,442 @@ Esta entidade é formada pela relação N:N entre Jogador e Jogos.
 - **id\_jogador (Chave Estrangeira):**
   - *Descrição:* Identificador do jogador que participou do jogo.
   - *Tipo de Dado:* Inteiro
-- **Minutos Jogados:**
+- **minutos\_jogados:**
   - *Descrição:* Quantidade de minutos que o jogador esteve em campo.
   - *Tipo de Dado:* Inteiro
-- **Gols:**
+- **gols:**
   - *Descrição:* Número de gols marcados pelo jogador na partida.
   - *Tipo de Dado:* Inteiro
-- **Assistências:**
+- **assistencias:**
   - *Descrição:* Número de assistências para gol feitas pelo jogador na partida.
   - *Tipo de Dado:* Inteiro
-- **Cartões:**
+- **cartoes:**
   - *Descrição:* Cartões recebidos pelo jogador (ex: Amarelo, Vermelho).
   - *Tipo de Dado:* Texto / Inteiro (codificado)
+
+### **Entidade Associativa: Convocação**
+Esta entidade é formada pela relação N:N entre **Jogador e Edição**.
+
+- **id\_convocacao (Chave Primária):**
+  - *Descrição:* Identificador único do registro de convocação.
+  - *Tipo de Dado:* Inteiro / Autoincremento
+- **id\_jogador (Chave Estrangeira):**
+  - *Descrição:* Identificador do jogador que participou do jogo.
+  - *Tipo de Dado:* Inteiro
+- **ano\_edicao:**
+  - *Descrição:* Ano da edição da Copa para a qual o jogador foi convocado.
+  - *Tipo de Dado:* Inteiro
+- **clube\_na\_epoca:**
+  - *Descrição:* Clube onde o jogador atuava na época desta edição específica.
+  - *Tipo de Dado:* Texto
+- **numero\_camisa:**
+  - *Descrição:* Número da camisa utilizada pelo jogador nesta edição específica..
+  - *Tipo de Dado:* Inteiro
+### **Entidade Associativa: Participação Seleção**
+É a entidade é formada pela relação N:N entre **Edição e Seleção**.
+
+- **Ano\_edicao (Chave Estrangeira):**
+  - *Descrição:* Ano da edição do torneio.
+  - *Tipo de Dado:* Inteiro
+- **id\_selecao (Chave Estrangeira):**
+  - *Descrição:* Identificador da seleção que participou daquela edição.
+  - *Tipo de Dado:* Inteiro
 ### **4. Projeto Lógico**
 
 #### **4.1. Mapeamento para o Modelo Relacional**
 
-[Mostre a estrutura das tabelas do modelo relacional, com as chaves primárias e estrangeiras identificadas. Exemplo abaixo.]
-
-Livro (<u>ISBN</u>, Título, Ano, Código\_Autor)
-
-Autor (<u>Código\_Autor</u>, Nome)
-
+![](Aspose.Words.e3214c66-426f-411f-b025-82c4cd47df57.002.png)
 #### **4.2. Normalização**
+A normalização é o processo de organização dos dados em um banco de dados com o objetivo de reduzir a redundância e garantir a integridade das informações. Neste projeto, o esquema relacional foi refinado para atender às três primeiras formas normais (1FN, 2FN e 3FN), conforme detalhado a seguir:
 
-[Explique a aplicação das formas normais (1FN, 2FN, 3FN) no projeto, justificando como as tabelas foram projetadas para evitar redundâncias.]
+**1. Primeira Forma Normal (1FN): Atomicidade e Valores Únicos** A 1FN estabelece que todos os atributos de uma tabela devem conter valores atômicos (indivisíveis) e que não devem existir grupos de valores repetidos.
 
+- **Aplicação no Projeto:** Para evitar o armazenamento de múltiplos valores em uma única célula (como uma lista de jogos em que um jogador atuou), utilizamos tabelas associativas. A criação das tabelas **Participacao** e **Participacao\_Selecao** garante que cada registro seja único e atômico, eliminando grupos de repetição e facilitando consultas SQL.
+
+**2. Segunda Forma Normal (2FN): Dependência Funcional Total** A 2FN exige que a tabela esteja na 1FN e que os atributos não-chave dependam de **toda** a chave primária (e não apenas de uma parte dela). Esta regra é crítica para tabelas com chaves compostas.
+
+- **Aplicação no Projeto:** Na tabela **Participacao**, a chave primária é composta por id\_jogo e id\_jogador. Os atributos como gols, assistencias e cartoes dependem exclusivamente dessa combinação (o desempenho daquele jogador naquela partida específica). Não incluímos dados como "Nome do Jogador" nesta tabela, pois isso dependeria apenas de uma parte da chave (id\_jogador), o que violaria a 2FN e geraria redundância.
+
+**3. Terceira Forma Normal (3FN): Dependência Transitiva e Histórico** A 3FN exige que a tabela esteja na 2FN e que não existam dependências transitivas (um atributo não-chave dependendo de outro atributo não-chave). Todos os campos devem depender diretamente da chave primária.
+
+- **Aplicação no Projeto:** Esta regra motivou a reestruturação da entidade **Jogador**. Inicialmente, atributos como Clube e Número da Camisa poderiam pertencer à tabela de jogadores. No entanto, esses dados são voláteis e dependem do contexto temporal (a Edição da Copa).
+- **Solução:** Criamos a tabela **Convocacao**. Movemos os atributos variáveis (clube\_na\_epoca, numero\_camisa) para ela. Assim, a tabela Jogador mantém apenas dados imutáveis (Nome, Data de Nascimento), enquanto a Convocacao armazena o histórico do atleta em cada ano, garantindo a integridade histórica e eliminando anomalias de atualização.
 
 ### **5. Implementação**
 
 
 #### **5.1. Scripts SQL de Criação (DDL)**
-
-[Inclua o código SQL completo para a criação de todas as tabelas. O código deve ser executável.]
-
 SQL
 
+CREATE TABLE edicao (
 
-CREATE TABLE Autor (\
-`    `codigo\_autor INT PRIMARY KEY,\
-`    `nome VARCHAR(255) NOT NULL\
-);\
-\
-CREATE TABLE Livro (\
-`    `isbn VARCHAR(13) PRIMARY KEY,\
-`    `titulo VARCHAR(255) NOT NULL,\
-`    `ano INT,\
-`    `codigo\_autor INT,\
-`    `FOREIGN KEY (codigo\_autor) REFERENCES Autor(codigo\_autor)\
+`    `ano INTEGER NOT NULL,
+
+`    `pais\_sede VARCHAR(100),
+
+`    `campeao VARCHAR(100),
+
+`    `selecoes\_participantes INTEGER,
+
+`    `CONSTRAINT edicao\_pkey PRIMARY KEY (ano)
+
+);
+
+CREATE TABLE selecao (
+
+`    `id\_selecao SERIAL NOT NULL,
+
+`    `nome VARCHAR(100) NOT NULL,
+
+`    `confederacao VARCHAR(50),
+
+`    `CONSTRAINT selecao\_pkey PRIMARY KEY (id\_selecao)
+
+); 
+
+CREATE TABLE jogador (
+
+`    `id\_jogador SERIAL NOT NULL,
+
+`    `nome VARCHAR(150) NOT NULL,
+
+`    `data\_nascimento DATE,
+
+`    `posicao VARCHAR(50),
+
+`    `nacionalidade VARCHAR(100),
+
+`    `id\_selecao INTEGER,
+
+`    `CONSTRAINT jogador\_pkey PRIMARY KEY (id\_jogador),
+
+`    `CONSTRAINT jogador\_id\_selecao\_fkey FOREIGN KEY (id\_selecao)
+
+`        `REFERENCES public.selecao (id\_selecao)
+
+); 
+
+CREATE TABLE jogos (
+
+`    `id\_jogo SERIAL NOT NULL,
+
+`    `data\_jogo DATE,
+
+`    `fase VARCHAR(50),
+
+`    `local\_jogo VARCHAR(100),
+
+`    `gols\_selecao1 INTEGER,
+
+`    `gols\_selecao2 INTEGER,
+
+`    `id\_selecao1 INTEGER,
+
+`    `id\_selecao2 INTEGER,
+
+`    `ano\_edicao INTEGER,
+
+`    `CONSTRAINT jogos\_pkey PRIMARY KEY (id\_jogo),
+
+`    `CONSTRAINT jogos\_id\_selecao1\_fkey FOREIGN KEY (id\_selecao1)
+
+`        `REFERENCES public.selecao (id\_selecao),
+
+`    `CONSTRAINT jogos\_id\_selecao2\_fkey FOREIGN KEY (id\_selecao2)
+
+`        `REFERENCES public.selecao (id\_selecao),
+
+`    `CONSTRAINT jogos\_ano\_edicao\_fkey FOREIGN KEY (ano\_edicao)
+
+`        `REFERENCES public.edicao (ano)
+
+); 
+
+CREATE TABLE participacao (
+
+`    `id\_jogo INTEGER NOT NULL,
+
+`    `id\_jogador INTEGER NOT NULL,
+
+`    `minutos\_jogados INTEGER,
+
+`    `gols INTEGER DEFAULT 0,
+
+`    `assistencias INTEGER DEFAULT 0,
+
+`    `cartoes VARCHAR(50),
+
+`    `CONSTRAINT participacao\_pkey PRIMARY KEY (id\_jogo, id\_jogador),
+
+`    `CONSTRAINT participacao\_id\_jogo\_fkey FOREIGN KEY (id\_jogo)
+
+`        `REFERENCES public.jogos (id\_jogo),
+
+`    `CONSTRAINT participacao\_id\_jogador\_fkey FOREIGN KEY (id\_jogador)
+
+`        `REFERENCES public.jogador (id\_jogador)
+
+); 
+
+CREATE TABLE convocacao (
+
+`    `id\_convocacao SERIAL PRIMARY KEY,
+
+`    `id\_jogador INTEGER NOT NULL,
+
+`    `ano\_edicao INTEGER NOT NULL,
+
+`    `clube\_na\_epoca VARCHAR(100),
+
+`    `numero\_camisa INTEGER,
+
+`    `CONSTRAINT convocacao\_id\_jogador\_fkey FOREIGN KEY (id\_jogador)
+
+`        `REFERENCES public.jogador (id\_jogador),
+
+`    `CONSTRAINT convocacao\_ano\_edicao\_fkey FOREIGN KEY (ano\_edicao)
+
+`        `REFERENCES public.edicao (ano),
+
+`    `CONSTRAINT unique\_jogador\_edicao UNIQUE (id\_jogador, ano\_edicao)
+
+); 
+
+CREATE TABLE participacao\_selecao (
+
+`    `ano\_edicao INTEGER NOT NULL,
+
+`    `id\_selecao INTEGER NOT NULL,
+
+`    `CONSTRAINT participacao\_selecao\_pkey PRIMARY KEY (ano\_edicao, id\_selecao),
+
+`    `CONSTRAINT participacao\_selecao\_ano\_fkey FOREIGN KEY (ano\_edicao)
+
+`        `REFERENCES public.edicao (ano),
+
+`    `CONSTRAINT participacao\_selecao\_id\_selecao\_fkey FOREIGN KEY (id\_selecao)
+
+`        `REFERENCES public.selecao (id\_selecao)
+
 );
 
 #### **5.2. Scripts SQL de Manipulação e Consulta (DML/DQL)**
-
-[Apresente consultas SQL variadas que demonstrem a funcionalidade do sistema. Explique cada consulta com um breve comentário.]
+**A. Script de População de Dados (INSERT)**
 
 SQL
 
+-- 1. Inserir Edições da Copa
 
--- Consulta 1: Listar todos os livros com seus autores\
-SELECT T1.titulo, T2.nome\
-FROM Livro AS T1\
-JOIN Autor AS T2 ON T1.codigo\_autor = T2.codigo\_autor;\
-\
--- Consulta 2: Contar quantos livros um autor específico possui\
-SELECT COUNT(T1.isbn)\
-FROM Livro AS T1\
-JOIN Autor AS T2 ON T1.codigo\_autor = T2.codigo\_autor\
-WHERE T2.nome = 'Autor Exemplo';
+INSERT INTO public.edicao (ano, pais\_sede, campeao, selecoes\_participantes) VALUES 
+
+(2002, 'Coreia do Sul e Japão', 'Brasil', 32),
+
+(2022, 'Qatar', 'Argentina', 32);
+
+-- 2. Inserir Seleções
+
+INSERT INTO public.selecao (nome, confederacao) VALUES 
+
+('Brasil', 'CONMEBOL'),
+
+('Alemanha', 'UEFA'),
+
+('Argentina', 'CONMEBOL'),
+
+('França', 'UEFA');
+
+-- 3. Registrar Seleções nas Edições (Tabela Participacao\_Selecao)
+
+INSERT INTO public.participacao\_selecao (ano\_edicao, id\_selecao) VALUES 
+
+(2002, (SELECT id\_selecao FROM public.selecao WHERE nome = 'Brasil')),
+
+(2002, (SELECT id\_selecao FROM public.selecao WHERE nome = 'Alemanha')),
+
+(2022, (SELECT id\_selecao FROM public.selecao WHERE nome = 'Argentina')),
+
+(2022, (SELECT id\_selecao FROM public.selecao WHERE nome = 'França'));
+
+-- 4. Inserir Jogadores (Dados Fixos)
+
+INSERT INTO public.jogador (nome, data\_nascimento, posicao, nacionalidade, id\_selecao) VALUES
+
+-- 2002
+
+('Ronaldo Nazário', '1976-09-18', 'Atacante', 'Brasil', (SELECT id\_selecao FROM public.selecao WHERE nome = 'Brasil')),
+
+('Oliver Kahn', '1969-06-15', 'Goleiro', 'Alemanha', (SELECT id\_selecao FROM public.selecao WHERE nome = 'Alemanha')),
+
+-- 2022
+
+('Lionel Messi', '1987-06-24', 'Atacante', 'Argentina', (SELECT id\_selecao FROM public.selecao WHERE nome = 'Argentina')),
+
+('Kylian Mbappé', '1998-12-20', 'Atacante', 'França', (SELECT id\_selecao FROM public.selecao WHERE nome = 'França'));
+
+-- 5. Inserir Convocação (Histórico: Clube e Número da época)
+
+INSERT INTO public.convocacao (id\_jogador, ano\_edicao, clube\_na\_epoca, numero\_camisa) VALUES
+
+((SELECT id\_jogador FROM public.jogador WHERE nome = 'Ronaldo Nazário'), 2002, 'Inter de Milão', 9),
+
+((SELECT id\_jogador FROM public.jogador WHERE nome = 'Oliver Kahn'), 2002, 'Bayern de Munique', 1),
+
+((SELECT id\_jogador FROM public.jogador WHERE nome = 'Lionel Messi'), 2022, 'Paris Saint-Germain', 10),
+
+((SELECT id\_jogador FROM public.jogador WHERE nome = 'Kylian Mbappé'), 2022, 'Paris Saint-Germain', 10);
+
+-- 6. Inserir Jogos
+
+INSERT INTO public.jogos (data\_jogo, fase, local\_jogo, gols\_selecao1, gols\_selecao2, id\_selecao1, id\_selecao2, ano\_edicao) VALUES
+
+-- Final 2002: Brasil 2 x 0 Alemanha
+
+('2002-06-30', 'Final', 'Yokohama', 2, 0, (SELECT id\_selecao FROM public.selecao WHERE nome = 'Brasil'), (SELECT id\_selecao FROM public.selecao WHERE nome = 'Alemanha'), 2002),
+
+-- Final 2022: Argentina 3 x 3 França
+
+('2022-12-18', 'Final', 'Lusail Stadium', 3, 3, (SELECT id\_selecao FROM public.selecao WHERE nome = 'Argentina'), (SELECT id\_selecao FROM public.selecao WHERE nome = 'França'), 2022);
+
+-- 7. Inserir Participação (Estatísticas do jogo)
+
+INSERT INTO public.participacao (id\_jogo, id\_jogador, minutos\_jogados, gols, assistencias, cartoes) VALUES
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao = 2002), (SELECT id\_jogador FROM public.jogador WHERE nome = 'Ronaldo Nazário'), 85, 2, 0, 'Nenhum'),
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao = 2002), (SELECT id\_jogador FROM public.jogador WHERE nome = 'Oliver Kahn'), 90, 0, 0, 'Amarelo'),
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao = 2022), (SELECT id\_jogador FROM public.jogador WHERE nome = 'Lionel Messi'), 120, 2, 0, 'Nenhum'),
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao = 2022), (SELECT id\_jogador FROM public.jogador WHERE nome = 'Kylian Mbappé'), 120, 3, 0, 'Nenhum');
+
+**B. Consultas de Relatórios (SELECT)**
+
+Abaixo estão as consultas que atendem aos Requisitos Funcionais definidos na seção 2.1.
+
+
+**Consulta 1:** Média de gols por jogo de uma edição específica (Ex: 2022)
+
+SQL
+
+SELECT AVG(gols\_selecao1 + gols\_selecao2) AS media\_gols\_por\_jogo
+
+FROM public.jogos
+
+WHERE ano\_edicao = 2022;
+
+
+**Consulta 2:** Top jogadores com mais gols e assistências em uma edição
+
+SELECT 
+
+`    `j.nome, 
+
+`    `s.nome AS selecao,
+
+`    `SUM(p.gols) AS total\_gols,
+
+`    `SUM(p.assistencias) AS total\_assistencias
+
+FROM public.participacao p
+
+JOIN public.jogador j ON p.id\_jogador = j.id\_jogador
+
+JOIN public.jogos g ON p.id\_jogo = g.id\_jogo
+
+JOIN public.selecao s ON j.id\_selecao = s.id\_selecao
+
+WHERE g.ano\_edicao = 2022
+
+GROUP BY j.nome, s.nome
+
+ORDER BY total\_gols DESC, total\_assistencias DESC
+
+LIMIT 10;
+
+**Consulta 3:** Total de cartões por Confederação
+
+SELECT 
+
+`    `s.confederacao,
+
+`    `COUNT(p.cartoes) AS total\_cartoes
+
+FROM public.participacao p
+
+JOIN public.jogador j ON p.id\_jogador = j.id\_jogador
+
+JOIN public.selecao s ON j.id\_selecao = s.id\_selecao
+
+WHERE p.cartoes IN ('Amarelo', 'Vermelho')
+
+GROUP BY s.confederacao;
+
+**Consulta 4:** Jogos de Mata-mata que terminaram em empate
+
+SELECT 
+
+`    `g.fase,
+
+`    `s1.nome AS time\_casa,
+
+`    `g.gols\_selecao1,
+
+`    `g.gols\_selecao2,
+
+`    `s2.nome AS time\_fora,
+
+`    `g.data\_jogo
+
+FROM public.jogos g
+
+JOIN public.selecao s1 ON g.id\_selecao1 = s1.id\_selecao
+
+JOIN public.selecao s2 ON g.id\_selecao2 = s2.id\_selecao
+
+WHERE g.fase != 'Grupos' 
+
+`  `AND g.gols\_selecao1 = g.gols\_selecao2;
+
+**Consulta 5:** Histórico do Jogador (Clube e Número na Época) demonstra a normalização aplicada na tabela Convocacao.
+
+SELECT 
+
+`    `j.nome, 
+
+`    `g.ano\_edicao,
+
+`    `c.clube\_na\_epoca, 
+
+`    `c.numero\_camisa
+
+FROM public.participacao p
+
+JOIN public.jogador j ON p.id\_jogador = j.id\_jogador
+
+JOIN public.jogos g ON p.id\_jogo = g.id\_jogo
+
+JOIN public.convocacao c ON j.id\_jogador = c.id\_jogador AND g.ano\_edicao = c.ano\_edicao
+
+ORDER BY j.nome, g.ano\_edicao;
 
 
 ### **6. Conclusão**
+O desenvolvimento do banco de dados para o Sistema de Futebol da Copa do Mundo permitiu aplicar de forma prática conceitos fundamentais de modelagem de diagramas, normalização e implementação em SQL. O projeto consolidou a importância de estruturar corretamente entidades, relações e restrições para garantir integridade e consistência dos dados, especialmente em um domínio histórico e rico em informações como o das edições da Copa do Mundo.
+
+Além disso, a construção dos scripts de criação, inserção e consulta reforçou a necessidade de um modelo lógico bem definido e estruturado, capaz de suportar análises reais e criação de scripts para automação de consultas para reduzir o tempo ao manusear o banco de dados, como desempenho de jogadores, estatísticas de jogos e participação das seleções ao longo dos anos.
+
 
 #### **6.1. Considerações Finais**
+A elaboração deste projeto proporcionou uma experiência completa, desde o levantamento dos requisitos até a implementação no PostgreSQL. Entre os principais aprendizados, destacam-se: a correta utilização de chaves estrangeiras, o uso de tabelas associativas para relações N:N, a aplicação prática das formas normais e o desenvolvimento de consultas SQL mais complexas. De forma geral, o sistema final atende ao objetivo proposto e demonstra a eficácia do modelo relacional para representar dados esportivos históricos de maneira organizada e confiável.
 
-[Faça uma reflexão sobre a experiência de desenvolver o projeto, os desafios superados e os principais aprendizados.]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Aprendemos muito nessa experiência e sinto que ela foi edificante na nossa jornada acadêmica e profissional.
 ### <a name="_dasejqajp4gs"></a>**7. Referências**
+Fontes de pesquisa:\
+\
+1 - <https://www.transfermarkt.com.br/>  (Site que mostra os clubes e dados de cada jogador referente aos anos).
 
-[Liste as fontes de pesquisa, como livros, artigos ou sites, se aplicável.]
+2 - <https://www.fifa.com/pt> (Site Oficial da Federação Internacional de Futebol).
+
+3- <http://ge.globo.com/> (Site do Globo Esporte)
+
+

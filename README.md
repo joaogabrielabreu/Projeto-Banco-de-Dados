@@ -119,7 +119,7 @@ As funcionalidades do sistema que interagem com o banco de dados são as seguint
 ### **3. Projeto Conceitual**
 
 #### **3.1. Modelo Entidade-Relacionamento (MER)**
-![](Aspose.Words.9586b19b-1288-4563-93cd-ea33cff383d6.001.png)
+![](Aspose.Words.26f85664-daac-4b30-8afe-6b00f8cedb1f.001.png)
 #### **3.2. Dicionário de Dados**
 ### **Entidade: Edição**
 - **Ano:**
@@ -247,7 +247,7 @@ Esta entidade é formada pela relação N:N entre **Jogador e Edição**.
 
 #### **4.1. Mapeamento para o Modelo Relacional**
 
-![](Aspose.Words.9586b19b-1288-4563-93cd-ea33cff383d6.002.png)
+![](Aspose.Words.26f85664-daac-4b30-8afe-6b00f8cedb1f.002.png)
 #### **4.2. Normalização**
 A normalização é o processo de organização dos dados em um banco de dados com o objetivo de reduzir a redundância e garantir a integridade das informações. Neste projeto, o esquema relacional foi refinado para atender às três primeiras formas normais (1FN, 2FN e 3FN), conforme detalhado a seguir:
 
@@ -427,29 +427,55 @@ CREATE TABLE participacao\_selecao (
 
 SQL
 
--- 1. Inserir Edições da Copa
+\-----------------------------------------------------------------------------------
 
-INSERT INTO public.edicao (ano, pais\_sede, campeao, selecoes\_participantes) VALUES 
+-- 1. LIMPEZA TOTAL (Garante que começamos do zero para evitar conflitos)
+
+\-----------------------------------------------------------------------------------
+
+TRUNCATE TABLE public.participacao, public.convocacao, public.participacao\_selecao, public.jogos, public.jogador, public.selecao, public.edicao RESTART IDENTITY CASCADE;
+
+\-----------------------------------------------------------------------------------
+
+-- 2. CADASTRO DE EDIÇÕES E SELEÇÕES
+
+\-----------------------------------------------------------------------------------
+
+-- Edições
+
+INSERT INTO public.edicao (ano, pais\_sede, campeao, selecoes\_participantes) VALUES
+
+(1970, 'México', 'Brasil', 16),
 
 (2002, 'Coreia do Sul e Japão', 'Brasil', 32),
 
 (2022, 'Qatar', 'Argentina', 32);
 
--- 2. Inserir Seleções
+-- Seleções (Todas de 1970 + As de 2002/2022)
 
-INSERT INTO public.selecao (nome, confederacao) VALUES 
+INSERT INTO public.selecao (nome, confederacao) VALUES
 
-('Brasil', 'CONMEBOL'),
+-- Seleções de 1970
 
-('Alemanha', 'UEFA'),
+('Brasil', 'CONMEBOL'), ('Inglaterra', 'UEFA'), ('Romênia', 'UEFA'), ('Tchecoslováquia', 'UEFA'),
 
-('Argentina', 'CONMEBOL'),
+('União Soviética', 'UEFA'), ('México', 'CONCACAF'), ('Bélgica', 'UEFA'), ('El Salvador', 'CONCACAF'),
 
-('França', 'UEFA');
+('Itália', 'UEFA'), ('Uruguai', 'CONMEBOL'), ('Suécia', 'UEFA'), ('Israel', 'AFC'),
 
--- 3. Registrar Seleções nas Edições (Tabela Participacao\_Selecao)
+('Alemanha', 'UEFA'), ('Peru', 'CONMEBOL'), ('Bulgária', 'UEFA'), ('Marrocos', 'CAF'),
 
-INSERT INTO public.participacao\_selecao (ano\_edicao, id\_selecao) VALUES 
+-- Extras de 2002/2022
+
+('França', 'UEFA'), ('Argentina', 'CONMEBOL');
+
+-- Vincular Seleções às Edições
+
+INSERT INTO public.participacao\_selecao (ano\_edicao, id\_selecao)
+
+SELECT 1970, id\_selecao FROM public.selecao WHERE nome IN ('Brasil', 'Inglaterra', 'Romênia', 'Tchecoslováquia', 'União Soviética', 'México', 'Bélgica', 'El Salvador', 'Itália', 'Uruguai', 'Suécia', 'Israel', 'Alemanha', 'Peru', 'Bulgária', 'Marrocos');
+
+INSERT INTO public.participacao\_selecao (ano\_edicao, id\_selecao) VALUES
 
 (2002, (SELECT id\_selecao FROM public.selecao WHERE nome = 'Brasil')),
 
@@ -459,57 +485,169 @@ INSERT INTO public.participacao\_selecao (ano\_edicao, id\_selecao) VALUES
 
 (2022, (SELECT id\_selecao FROM public.selecao WHERE nome = 'França'));
 
--- 4. Inserir Jogadores (Dados Fixos)
+\-----------------------------------------------------------------------------------
+
+-- 3. CADASTRO DE JOGADORES
+
+\-----------------------------------------------------------------------------------
 
 INSERT INTO public.jogador (nome, data\_nascimento, posicao, nacionalidade, id\_selecao) VALUES
 
+-- 1970 (Brasil e Estrelas)
+
+('Pelé', '1940-10-23', 'Atacante', 'Brasil', (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil')),
+
+('Jairzinho', '1944-12-25', 'Atacante', 'Brasil', (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil')),
+
+('Tostão', '1947-01-25', 'Atacante', 'Brasil', (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil')),
+
+('Rivelino', '1946-01-01', 'Meia', 'Brasil', (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil')),
+
+('Gérson', '1941-01-11', 'Meia', 'Brasil', (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil')),
+
+('Carlos Alberto Torres', '1944-07-17', 'Lateral', 'Brasil', (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil')),
+
+('Clodoaldo', '1949-09-25', 'Meia', 'Brasil', (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil')),
+
+('Gerd Müller', '1945-11-03', 'Atacante', 'Alemanha', (SELECT id\_selecao FROM public.selecao WHERE nome='Alemanha')),
+
+('Teófilo Cubillas', '1949-03-08', 'Meia', 'Peru', (SELECT id\_selecao FROM public.selecao WHERE nome='Peru')),
+
+('Luigi Riva', '1944-11-07', 'Atacante', 'Itália', (SELECT id\_selecao FROM public.selecao WHERE nome='Itália')),
+
 -- 2002
 
-('Ronaldo Nazário', '1976-09-18', 'Atacante', 'Brasil', (SELECT id\_selecao FROM public.selecao WHERE nome = 'Brasil')),
+('Ronaldo Nazário', '1976-09-18', 'Atacante', 'Brasil', (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil')),
 
-('Oliver Kahn', '1969-06-15', 'Goleiro', 'Alemanha', (SELECT id\_selecao FROM public.selecao WHERE nome = 'Alemanha')),
+('Oliver Kahn', '1969-06-15', 'Goleiro', 'Alemanha', (SELECT id\_selecao FROM public.selecao WHERE nome='Alemanha')),
 
 -- 2022
 
-('Lionel Messi', '1987-06-24', 'Atacante', 'Argentina', (SELECT id\_selecao FROM public.selecao WHERE nome = 'Argentina')),
+('Lionel Messi', '1987-06-24', 'Atacante', 'Argentina', (SELECT id\_selecao FROM public.selecao WHERE nome='Argentina')),
 
-('Kylian Mbappé', '1998-12-20', 'Atacante', 'França', (SELECT id\_selecao FROM public.selecao WHERE nome = 'França'));
+('Kylian Mbappé', '1998-12-20', 'Atacante', 'França', (SELECT id\_selecao FROM public.selecao WHERE nome='França'));
 
--- 5. Inserir Convocação (Histórico: Clube e Número da época)
+\-----------------------------------------------------------------------------------
+
+-- 4. CONVOCAÇÃO
+
+\-----------------------------------------------------------------------------------
 
 INSERT INTO public.convocacao (id\_jogador, ano\_edicao, clube\_na\_epoca, numero\_camisa) VALUES
 
-((SELECT id\_jogador FROM public.jogador WHERE nome = 'Ronaldo Nazário'), 2002, 'Inter de Milão', 9),
+-- 1970
 
-((SELECT id\_jogador FROM public.jogador WHERE nome = 'Oliver Kahn'), 2002, 'Bayern de Munique', 1),
+((SELECT id\_jogador FROM public.jogador WHERE nome='Pelé'), 1970, 'Santos', 10),
 
-((SELECT id\_jogador FROM public.jogador WHERE nome = 'Lionel Messi'), 2022, 'Paris Saint-Germain', 10),
+((SELECT id\_jogador FROM public.jogador WHERE nome='Jairzinho'), 1970, 'Botafogo', 7),
 
-((SELECT id\_jogador FROM public.jogador WHERE nome = 'Kylian Mbappé'), 2022, 'Paris Saint-Germain', 10);
+((SELECT id\_jogador FROM public.jogador WHERE nome='Tostão'), 1970, 'Cruzeiro', 9),
 
--- 6. Inserir Jogos
+((SELECT id\_jogador FROM public.jogador WHERE nome='Rivelino'), 1970, 'Corinthians', 11),
+
+((SELECT id\_jogador FROM public.jogador WHERE nome='Gérson'), 1970, 'São Paulo', 8),
+
+((SELECT id\_jogador FROM public.jogador WHERE nome='Carlos Alberto Torres'), 1970, 'Santos', 4),
+
+((SELECT id\_jogador FROM public.jogador WHERE nome='Gerd Müller'), 1970, 'Bayern de Munique', 13),
+
+((SELECT id\_jogador FROM public.jogador WHERE nome='Teófilo Cubillas'), 1970, 'Alianza Lima', 10),
+
+-- 2002
+
+((SELECT id\_jogador FROM public.jogador WHERE nome='Ronaldo Nazário'), 2002, 'Inter de Milão', 9),
+
+((SELECT id\_jogador FROM public.jogador WHERE nome='Oliver Kahn'), 2002, 'Bayern de Munique', 1),
+
+-- 2022
+
+((SELECT id\_jogador FROM public.jogador WHERE nome='Lionel Messi'), 2022, 'PSG', 10),
+
+((SELECT id\_jogador FROM public.jogador WHERE nome='Kylian Mbappé'), 2022, 'PSG', 10);
+
+\-----------------------------------------------------------------------------------
+
+-- 5. JOGOS (Inserção de TODOS os jogos de 1970)
+
+\-----------------------------------------------------------------------------------
 
 INSERT INTO public.jogos (data\_jogo, fase, local\_jogo, gols\_selecao1, gols\_selecao2, id\_selecao1, id\_selecao2, ano\_edicao) VALUES
 
--- Final 2002: Brasil 2 x 0 Alemanha
+-- COPA 1970: FASE DE GRUPOS (Brasil no Grupo 3)
 
-('2002-06-30', 'Final', 'Yokohama', 2, 0, (SELECT id\_selecao FROM public.selecao WHERE nome = 'Brasil'), (SELECT id\_selecao FROM public.selecao WHERE nome = 'Alemanha'), 2002),
+('1970-06-03', 'Grupos', 'Guadalajara', 4, 1, (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil'), (SELECT id\_selecao FROM public.selecao WHERE nome='Tchecoslováquia'), 1970),
 
--- Final 2022: Argentina 3 x 3 França
+('1970-06-07', 'Grupos', 'Guadalajara', 1, 0, (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil'), (SELECT id\_selecao FROM public.selecao WHERE nome='Inglaterra'), 1970),
 
-('2022-12-18', 'Final', 'Lusail Stadium', 3, 3, (SELECT id\_selecao FROM public.selecao WHERE nome = 'Argentina'), (SELECT id\_selecao FROM public.selecao WHERE nome = 'França'), 2022);
+('1970-06-10', 'Grupos', 'Guadalajara', 3, 2, (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil'), (SELECT id\_selecao FROM public.selecao WHERE nome='Romênia'), 1970),
 
--- 7. Inserir Participação (Estatísticas do jogo)
+-- Outros Jogos de 1970
+
+('1970-06-03', 'Grupos', 'León', 2, 1, (SELECT id\_selecao FROM public.selecao WHERE nome='Alemanha'), (SELECT id\_selecao FROM public.selecao WHERE nome='Marrocos'), 1970),
+
+('1970-06-07', 'Grupos', 'León', 5, 2, (SELECT id\_selecao FROM public.selecao WHERE nome='Alemanha'), (SELECT id\_selecao FROM public.selecao WHERE nome='Bulgária'), 1970),
+
+('1970-06-10', 'Grupos', 'León', 3, 1, (SELECT id\_selecao FROM public.selecao WHERE nome='Alemanha'), (SELECT id\_selecao FROM public.selecao WHERE nome='Peru'), 1970),
+
+-- COPA 1970: MATA-MATA
+
+('1970-06-14', 'Quartas', 'Guadalajara', 4, 2, (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil'), (SELECT id\_selecao FROM public.selecao WHERE nome='Peru'), 1970),
+
+('1970-06-14', 'Quartas', 'León', 3, 2, (SELECT id\_selecao FROM public.selecao WHERE nome='Alemanha'), (SELECT id\_selecao FROM public.selecao WHERE nome='Inglaterra'), 1970),
+
+('1970-06-17', 'Semifinal', 'Guadalajara', 3, 1, (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil'), (SELECT id\_selecao FROM public.selecao WHERE nome='Uruguai'), 1970),
+
+('1970-06-21', 'Final', 'Cidade do México', 4, 1, (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil'), (SELECT id\_selecao FROM public.selecao WHERE nome='Itália'), 1970),
+
+-- FINAIS HISTÓRICAS (2002 e 2022)
+
+('2002-06-30', 'Final', 'Yokohama', 2, 0, (SELECT id\_selecao FROM public.selecao WHERE nome='Brasil'), (SELECT id\_selecao FROM public.selecao WHERE nome='Alemanha'), 2002),
+
+('2022-12-18', 'Final', 'Lusail', 3, 3, (SELECT id\_selecao FROM public.selecao WHERE nome='Argentina'), (SELECT id\_selecao FROM public.selecao WHERE nome='França'), 2022);
+
+\-----------------------------------------------------------------------------------
+
+-- 6. ESTATÍSTICAS (PARTICIPAÇÃO)
+
+-- CORREÇÃO: Filtramos também pelo 'id\_selecao1' = Brasil para garantir que o ID seja único
+
+\-----------------------------------------------------------------------------------
 
 INSERT INTO public.participacao (id\_jogo, id\_jogador, minutos\_jogados, gols, assistencias, cartoes) VALUES
 
-((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao = 2002), (SELECT id\_jogador FROM public.jogador WHERE nome = 'Ronaldo Nazário'), 85, 2, 0, 'Nenhum'),
+-- 1970: Brasil 4x1 Tchecoslováquia (Adicionado filtro 'id\_selecao1' para evitar duplicidade)
 
-((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao = 2002), (SELECT id\_jogador FROM public.jogador WHERE nome = 'Oliver Kahn'), 90, 0, 0, 'Amarelo'),
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=1970 AND id\_selecao1=(SELECT id\_selecao FROM public.selecao WHERE nome='Brasil') AND id\_selecao2=(SELECT id\_selecao FROM public.selecao WHERE nome='Tchecoslováquia')), (SELECT id\_jogador FROM public.jogador WHERE nome='Jairzinho'), 90, 2, 0, 'Nenhum'),
 
-((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao = 2022), (SELECT id\_jogador FROM public.jogador WHERE nome = 'Lionel Messi'), 120, 2, 0, 'Nenhum'),
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=1970 AND id\_selecao1=(SELECT id\_selecao FROM public.selecao WHERE nome='Brasil') AND id\_selecao2=(SELECT id\_selecao FROM public.selecao WHERE nome='Tchecoslováquia')), (SELECT id\_jogador FROM public.jogador WHERE nome='Pelé'), 90, 1, 0, 'Nenhum'),
 
-((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao = 2022), (SELECT id\_jogador FROM public.jogador WHERE nome = 'Kylian Mbappé'), 120, 3, 0, 'Nenhum');
+-- 1970: Brasil 1x0 Inglaterra
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=1970 AND id\_selecao1=(SELECT id\_selecao FROM public.selecao WHERE nome='Brasil') AND id\_selecao2=(SELECT id\_selecao FROM public.selecao WHERE nome='Inglaterra')), (SELECT id\_jogador FROM public.jogador WHERE nome='Jairzinho'), 90, 1, 0, 'Nenhum'),
+
+-- 1970: Brasil 4x2 Peru (Quartas)
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=1970 AND fase='Quartas' AND id\_selecao1=(SELECT id\_selecao FROM public.selecao WHERE nome='Brasil')), (SELECT id\_jogador FROM public.jogador WHERE nome='Tostão'), 90, 2, 1, 'Nenhum'),
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=1970 AND fase='Quartas' AND id\_selecao2=(SELECT id\_selecao FROM public.selecao WHERE nome='Peru')), (SELECT id\_jogador FROM public.jogador WHERE nome='Teófilo Cubillas'), 90, 1, 0, 'Nenhum'),
+
+-- 1970: Brasil 4x1 Itália (Final)
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=1970 AND fase='Final'), (SELECT id\_jogador FROM public.jogador WHERE nome='Pelé'), 90, 1, 2, 'Nenhum'),
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=1970 AND fase='Final'), (SELECT id\_jogador FROM public.jogador WHERE nome='Jairzinho'), 90, 1, 0, 'Nenhum'),
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=1970 AND fase='Final'), (SELECT id\_jogador FROM public.jogador WHERE nome='Carlos Alberto Torres'), 90, 1, 0, 'Nenhum'),
+
+-- 2002: Final
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=2002), (SELECT id\_jogador FROM public.jogador WHERE nome='Ronaldo Nazário'), 85, 2, 0, 'Nenhum'),
+
+-- 2022: Final
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=2022), (SELECT id\_jogador FROM public.jogador WHERE nome='Kylian Mbappé'), 120, 3, 0, 'Nenhum'),
+
+((SELECT id\_jogo FROM public.jogos WHERE ano\_edicao=2022), (SELECT id\_jogador FROM public.jogador WHERE nome='Lionel Messi'), 120, 2, 0, 'Nenhum');
 
 **B. Consultas de Relatórios (SELECT)**
 

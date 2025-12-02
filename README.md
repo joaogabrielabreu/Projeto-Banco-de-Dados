@@ -119,7 +119,7 @@ As funcionalidades do sistema que interagem com o banco de dados são as seguint
 ### **3. Projeto Conceitual**
 
 #### **3.1. Modelo Entidade-Relacionamento (MER)**
-![](Aspose.Words.e3214c66-426f-411f-b025-82c4cd47df57.001.png)
+![](Aspose.Words.9586b19b-1288-4563-93cd-ea33cff383d6.001.png)
 #### **3.2. Dicionário de Dados**
 ### **Entidade: Edição**
 - **Ano:**
@@ -247,7 +247,7 @@ Esta entidade é formada pela relação N:N entre **Jogador e Edição**.
 
 #### **4.1. Mapeamento para o Modelo Relacional**
 
-![](Aspose.Words.e3214c66-426f-411f-b025-82c4cd47df57.002.png)
+![](Aspose.Words.9586b19b-1288-4563-93cd-ea33cff383d6.002.png)
 #### **4.2. Normalização**
 A normalização é o processo de organização dos dados em um banco de dados com o objetivo de reduzir a redundância e garantir a integridade das informações. Neste projeto, o esquema relacional foi refinado para atender às três primeiras formas normais (1FN, 2FN e 3FN), conforme detalhado a seguir:
 
